@@ -1,13 +1,12 @@
 from time import sleep
 
-from bs4 import BeautifulSoup
-from parser import build_game_from_soup
-from files import load_game_html_from_file, load_game_html, save_game_html_to_file
-from output_writer import save_game, save_games
+from output_writer import save_games
+from src.service import process_game
 
-START_GAME_ID = 8840
-END_GAME_ID = 8800
-PAGE_LOAD_DELAY = 30
+# Counts down
+START_GAME_ID = 8842
+END_GAME_ID = 0
+PAGE_LOAD_DELAY = 15
 
 
 def main():
@@ -15,19 +14,12 @@ def main():
     game_id = START_GAME_ID
     while game_id > END_GAME_ID:
         try:
-            print(f"Processing Game {game_id}")
-            game_html = load_game_html_from_file(game_id)
-            if not game_html:
-                game_html = load_game_html(game_id)
-                save_game_html_to_file(game_id, game_html)
+            game = process_game(game_id)
+            if game.was_downloaded:
                 sleep(PAGE_LOAD_DELAY)
-            soup = BeautifulSoup(game_html, 'html.parser')
-            game = build_game_from_soup(soup)
-            print(game.title)
-            save_game(game_id, game)
             games.append(game)
         except Exception as e:
-            print(f"Error procesing game {game_id}: {e}")
+            print(f"Error processing game {game_id}: {e}")
             # raise
         game_id = game_id - 1
 

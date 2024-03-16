@@ -1,4 +1,7 @@
+import json
+import os
 import pathlib
+from math import floor
 
 from httpx import Client
 
@@ -11,18 +14,27 @@ def load_game_html(game_id):
         return response.text
 
 
+def load_games():
+    with open(f"{ROOT_DIR}/output/all_games.json", "r") as f:
+        return json.loads(f.read())
+
+
 def get_file_path(game_id: int, ext: str = "html") -> str:
-    return f"{ROOT_DIR}/games_data/{game_id}.{ext}"
+    dir_path = f"{ROOT_DIR}/data/games/{floor(game_id/100)*100}"
+    os.makedirs(dir_path, exist_ok=True)
+    return f"{dir_path}/{game_id}.{ext}"
 
 
-def save_game_html_to_file(game_id, game_html):
-    with open(get_file_path(game_id), "w", encoding="utf-8") as f:
+def save_game_html_to_file(game_id, game_html, path: str = None):
+    if not path:
+        path = get_file_path(game_id)
+    with open(path, "w", encoding="utf-8") as f:
         return f.write(game_html)
 
 
 def load_game_html_from_file(game_id) -> str | None:
     try:
-        with open(get_file_path(game_id), "r", encoding='cp437') as f:
+        with open(get_file_path(game_id), "r", encoding='utf-8') as f:
             return f.read()
     except FileNotFoundError:
         return None

@@ -19,6 +19,7 @@ class QuestionBoard(BaseModel):
 
 
 class Game(BaseModel):
+    was_downloaded: bool = False
     title: str
     comments: str
     show_number: int

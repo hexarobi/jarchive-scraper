@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from models import QuestionBoard, Question, Category, Game
 
 
-def build_game_from_soup(soup: BeautifulSoup):
+def build_game_from_soup(soup: BeautifulSoup) -> Game:
     error_elem = soup.find(class_="error")
     if error_elem:
         raise ValueError(f"Page Error: {error_elem.text}")
