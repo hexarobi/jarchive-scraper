@@ -5,6 +5,8 @@ from math import floor
 
 from httpx import Client
 
+from src.models import Game
+
 ROOT_DIR = pathlib.Path(__file__).parent.parent.resolve()
 
 
@@ -14,7 +16,16 @@ def load_game_html(game_id):
         return response.text
 
 
-def load_games():
+def load_games() -> list[Game]:
+    games = []
+    games_dict = load_games_dict()
+    for game_dict in games_dict:
+        game = Game.model_validate(game_dict)
+        games.append(game)
+    return games
+
+
+def load_games_dict():
     with open(f"{ROOT_DIR}/output/all_games.json", "r") as f:
         return json.loads(f.read())
 

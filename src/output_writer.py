@@ -4,7 +4,7 @@ import json
 from models import Game
 from files import get_file_path, ROOT_DIR
 
-OUTPUT_TSV_COLUMNS = ['air_date', 'title', 'comments', 'category', 'value', 'clue', 'answer']
+OUTPUT_TSV_COLUMNS = ['air_date', 'show_number', 'category', 'value', 'question', 'answer']
 
 
 def save_game(game_id, game: Game):
@@ -64,11 +64,12 @@ def clean(value):
 def write_question_row(writer, game, question):
     row = {
         'air_date': clean(game.air_date.isoformat()),
-        'title': clean(game.title),
-        'comments': clean(game.comments),
+        'show_number': game.show_number,
+        # 'title': clean(game.title),
+        # 'comments': clean(game.comments),
         'category': clean(question.category),
         'value': clean(question.value),
-        'clue': clean(question.clue),
+        'question': clean(question.clue),
         'answer': clean(question.answer),
     }
     writer.writerow(row)
